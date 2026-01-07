@@ -107,7 +107,7 @@ r3-extension: [
 eggs: [
 	"Make WebView library (cmake)" [
 		name: %build-cmake
-		cmd   %build-cmake "cmake ../webview/ -DCMAKE_BUILD_TYPE=Release"
+		cmd   %build-cmake "cmake ../webview/ -DCMAKE_BUILD_TYPE=Release -DWEBVIEW_BUILD_DOCS=OFF -DWEBVIEW_BUILD_TESTS=OFF -DWEBVIEW_BUILD_EXAMPLES=OFF -DWEBVIEW_INSTALL_TARGETS=ON"
 		cmd   %build-cmake {cmake --build . --config release -j 8}
 	]
 	"Basic test" [
