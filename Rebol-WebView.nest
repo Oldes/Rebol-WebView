@@ -1,0 +1,158 @@
+;-    .-.                                                                       
+;-   /'v'\   SISKIN-Builder project file                                        
+;-  (/uOu\)  https://github.com/Siskin-framework/Builder/                       
+;-===="="=======================================================================
+
+github: webview/webview
+
+version: 0.0.1
+
+compiler: clang
+arch:     x64
+optimize: 2
+
+;define: USE_TRACES
+
+;- options common for all Rebol extensions ----------------------
+#if Windows? [
+	define: _CRT_SECURE_NO_WARNINGS
+	define: TO_WINDOWS
+]
+#if Linux? [
+	compiler: gcc
+]
+
+target-x86: [
+	arch: x86
+]
+target-x64: [
+	arch: x64
+	#if macOS?   [
+		flag: "-arch x86_64"
+	]
+	define: _FILE_OFFSET_BITS=64
+	define: __LP64__       ; has long (integer) 64 bits
+]
+target-arm64: [
+	arch: arm64
+	#if Linux? [
+		flag: "-arch arm64"
+	]
+	#if macOS? [
+		flag: "-target arm64-apple-darwin"
+	]
+	define: _FILE_OFFSET_BITS=64
+	define: __LP64__   ; has long (integer) 64 bits
+	define: __arm64__
+]
+target-armv7: [
+	arch: armv7
+	flag: "-march=armv7"
+]
+;----------------------------------------------------------------
+
+webview-libraries: [
+	#if Windows? [
+		libraries: [
+			%advapi32
+			%ole32
+			%shell32
+			%shlwapi
+			%user32
+			%version
+			%kernel32
+			%user32
+			%gdi32
+			%winspool
+			%shell32
+			%ole32
+			%oleaut32
+			%uuid
+			%comdlg32
+			%advapi32
+			%build-cmake/core/Release/ %webview_static
+		]
+	]
+]
+
+r3-extension: [
+	flags:  shared
+	source: %src/
+	include: %build-cmake/core/amalgamation/
+	strip:  off
+
+	files: only [
+		%webview-commands.c
+		%webview-commands-table.c
+		%webview-rebol-extension.c
+	]
+	#if macOS? [
+		lflags:  [-dynamiclib]
+		flag:    -mmacosx-version-min=10.9
+		compiler: clang
+		sign: on
+	]
+	#if Posix? [
+		cflags: [-fPIC -pthread]
+		libraries: [%pthread]
+	]
+	#if Windows? [
+		upx: on
+	]
+	:webview-libraries
+	;- generate main extension header --------------------------------
+	do %src/webview-rebol-extension.r3 
+]
+
+eggs: [
+	"Make WebView library (cmake)" [
+		name: %build-cmake
+		cmd   %build-cmake "cmake ../webview/ -DCMAKE_BUILD_TYPE=Release"
+		cmd   %build-cmake {cmake --build . --config release -j 8}
+	]
+	"Basic test" [
+		name: %basic
+		file: %src/bind.c
+		include: %build-cmake/core/amalgamation/
+		flag: -mwindows
+		:webview-libraries
+	]
+;@@ TODO - Rebol extensions
+	#if Windows? [
+;		"Rebol WebView extension: win32_x86" [
+;			name: %webview-windows-x86
+;			:target-x86
+;			:r3-extension
+;		]
+		"Rebol WebView extension: win32_x64" [
+			name: %webview-windows-x64
+			:target-x64
+			:r3-extension
+		]
+	]
+;	#if macOS? [
+;		"Rebol WebView extension: macos_x64" [
+;			name: %webview-macos-x64
+;			:target-x64
+;		]
+;		"Rebol WebView extension: macos_arm64" [
+;			name: %webview-macos-arm64
+;			:target-arm64
+;		]
+;	]
+;	#if Linux? [
+;		"Rebol WebView extension:linux_x64" [
+;			name: %webview-linux-x64
+;			:target-x64
+;		]
+;		"Rebol WebView extension: linux_arm64" [
+;			name: %webview-linux-arm64
+;			:target-arm64
+;		]
+;		"Rebol WebView extension: linux_armv7" [
+;			name: %webview-linux-armv7
+;			:target-armv7
+;		]
+;	]
+]
+
