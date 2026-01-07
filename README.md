@@ -2,7 +2,7 @@
 
 # Rebol/WebView
 
-WebView extension for [Rebol3](https://github.com/Oldes/Rebol3) (version 3.20.0+). Embeds native WebView controls (Windows WebView2, macOS WKWebView, Linux WebKitGTK) into Rebol, enabling HTML/JS/CSS rendering and bi-directional interaction in separate threads. Supports window creation, navigation, HTML/JS evaluation, title and size setting, and handle management.
+[WebView](https://github.com/webview/webview) extension for [Rebol3](https://github.com/Oldes/Rebol3) (version 3.20.0+). Embeds native WebView controls (Windows WebView2, macOS WKWebView, Linux WebKitGTK) into Rebol, enabling HTML/JS/CSS rendering and bi-directional interaction in separate threads. Supports window creation, navigation, HTML/JS evaluation, title and size setting, and handle management.
 
 Currently a work in progress on Linux/macOS support.
 
