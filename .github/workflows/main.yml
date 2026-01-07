@@ -19,6 +19,9 @@ jobs:
     - name: Install Siskin Builder
       uses: oldes/install-siskin@v0.21.0
 
+    - name: List targets (clones webview sources)
+      run: ./siskin Rebol-WebView.nest --list
+
     - name: Fix clang-format
       run: clang-format.exe -i ./webview/core/include/webview/detail/platform/linux/webkitgtk/dmabuf.hh
 
