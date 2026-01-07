@@ -19,6 +19,9 @@ jobs:
     - name: Install Siskin Builder
       uses: oldes/install-siskin@v0.21.0
 
+    - name: Install Graphviz
+      run: choco install graphviz
+
     - name: Build WebView library using cmake
       run: ./siskin Rebol-WebView.nest build-cmake
 
