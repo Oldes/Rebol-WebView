@@ -1,0 +1,40 @@
+name: 'Rebol-WebView CI'
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Siskin Builder
+      uses: oldes/install-siskin@v0.21.0
+
+    - name: Build WebView library using cmake
+      run: ./siskin Rebol-WebView.nest build-cmake
+
+    - name: Build 64bit Rebol/WebView extension
+      run: ./siskin Rebol-WebView.nest -o ./webview-windows-x64.rebx --msvc webview-windows-x64
+#
+#    - name: Install Rebol for extension test
+#      uses: oldes/install-rebol@v3.16.0
+#      with:
+#        product: Bulk
+#
+#    - name: Minimal Rebol/WebView extension test
+#      run:  ./rebol3 ci-test.r3
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Rebol-WebView-CI-${{github.run_id}}
+        path: ./*.rebx
+
