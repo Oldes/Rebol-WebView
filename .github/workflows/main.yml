@@ -33,7 +33,7 @@ jobs:
 #    - name: Minimal Rebol/WebView extension test
 #      run:  ./rebol3 ci-test.r3
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: Rebol-WebView-CI-${{github.run_id}}
         path: ./*.rebx
